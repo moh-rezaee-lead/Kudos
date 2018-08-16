@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <link href='http://fonts.googleapis.com/css?family=Great+Vibes' rel='stylesheet' type='text/css'>
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div align="center">
+    <div id="thumbnail" class="row">
+        <div id="kudos1" class="column">
+            <img id="imageKudos1" src="CosmosKudos.001.png" onclick="canvasLoad('imageKudos1');">
+        </div>
+        <div id="kudos2" class="column">
+            <img id="imageKudos2" src="CosmosKudos.002.png" onclick="canvasLoad('imageKudos2');">
+        </div>
+        <div id="kudos3" class="column">
+            <img id="imageKudos3" src="CosmosKudos.003.png" onclick="canvasLoad('imageKudos3');">
+        </div>
+        <div id="kudos4" class="column">
+            <img id="imageKudos4" src="CosmosKudos.004.png" onclick="canvasLoad('imageKudos4');">
+        </div>
+    </div>
+    <div>
+        Line 1: <input type="text" maxlength="25" class="tb1" id="inputField1"/> <br>
+        Line 2: <input type="text" maxlength="25" class="tb1" id="inputField2"/> <br>
+        Line 3: <input type="text" maxlength="25" class="tb1" id="inputField3"/> <br>
+        <a id="preview" class="button">Preview Text</a> <br><br>
+    </div>
+
+    <div class="row">
+    <pre>
+        <h3>Kudos card live preview:</h3>
+    <canvas width="700" height="600" id="canvas">Sorry, no canvas available</canvas>
+        </pre>
+        <a id="download" class="button">Download the card</a>
+        <a id="slack" class="button">Send to slack</a><br><br>
+    </div>
+
+
+</div>
+<script>
+    var img;
+    window.onload = function () {
+        canvasLoad("imageKudos1");
+    }
+
+    function previewText(width, heightIncrement) {
+        var textValue1 = document.getElementById("inputField1").value;
+        var textValue2 = document.getElementById("inputField2").value;
+        var textValue3 = document.getElementById("inputField3").value;
+
+        var c = document.getElementById("canvas");
+        var ctx = c.getContext("2d");
+
+        ctx.clearRect(0, 0, c.width, c.height);
+        ctx.drawImage(img, 10, 10, 700, 600);
+
+        ctx.font = "400 32px/0.8 'Great Vibes'";
+        ctx.fillText(textValue1, width, canvas.height / 2 + heightIncrement);
+        ctx.fillText(textValue2, width, canvas.height / 2 + heightIncrement + 70);
+        ctx.fillText(textValue3, width, canvas.height / 2 + heightIncrement + 130);
+    }
+
+    function downloadCanvas(link, canvasId, filename) {
+        link.href = document.getElementById(canvasId).toDataURL();
+        link.download = filename;
+    }
+
+
+    function canvasLoad(imageId) {
+        var c = document.getElementById("canvas");
+        var ctx = c.getContext("2d");
+
+        img = document.getElementById(imageId);
+        ctx.drawImage(img, 10, 10, 700, 600);
+    }
+
+    /**
+     * The event handler for the link's onclick event. We give THIS as a
+     * parameter (=the link element), ID of the canvas and a filename.
+     */
+    document.getElementById('download').addEventListener('click', function () {
+        downloadCanvas(this, 'canvas', 'kudos.png');
+    }, false);
+
+    document.getElementById('slack').addEventListener('click', function () {
+
+        var url = 'https://hooks.slack.com/services/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'; // Webhook URL
+        var text = 'A Kudos card was sent by Cosmos!';// Text to post
+            $.ajax({
+                data: 'payload=' + JSON.stringify({
+                    "text": text
+                }),
+                dataType: 'json',
+                processData: false,
+                type: 'POST',
+                url: url
+            });
+
+    }, false);
+
+    document.getElementById('preview').addEventListener('click', function () {
+        switch (img.id) {
+            case "imageKudos1":
+                previewText(350,5);
+                break;
+            case "imageKudos2":
+                previewText(350,35);
+                break;
+            case "imageKudos3":
+                previewText(70,5);
+                break;
+            case "imageKudos4":
+                previewText(70,15);
+                break;
+        }
+    }, false);
+
+
+
+
+</script>
+<!--<script src="script.js"></script>-->
+</body>
+</html>
